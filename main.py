@@ -1,3 +1,5 @@
+from tasks import create_task
+
 def main():
     while True:
         print("\n--- Gestor de Tareas de Consola ---")
@@ -10,7 +12,7 @@ def main():
         opcion = input("Elige una opción (1-5): ")
         
         if opcion == '1':
-            print(">> Opción seleccionada: Crear tarea (Lógica pendiente)")
+            create_task()
         elif opcion == '2':
             print(">> Opción seleccionada: Listar tareas (Lógica pendiente)")
         elif opcion == '3':
