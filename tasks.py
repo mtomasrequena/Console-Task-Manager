@@ -77,3 +77,20 @@ def create_task():
         
     # 8. Damos feedback visual de éxito al usuario.
     print(f"\n✅ Tarea '{titulo}' guardada con éxito.")
+
+def list_tasks():
+    """Muestra todas las tareas guardadas en el archivo JSON."""
+    
+    # 1. Leemos la lista de tareas desde el archivo.
+    tareas = _leer_tareas()
+    
+    # 2. Verificamos si la lista está vacía.
+    if len(tareas) == 0:
+        print("\n📭 No hay tareas guardadas.")
+        return
+    
+    # 3. Si hay tareas, las mostramos en un formato amigable.
+    print("\n📋 Lista de Tareas:")
+    for tarea in tareas:
+        estado = "✅ Completada" if tarea["completada"] else "❌ Pendiente"
+        print(f"ID: {tarea['id']} | {tarea['titulo']} | Estado: {estado}")
