@@ -5,7 +5,11 @@ FILE_NAME = 'tasks.json'
 
 def create_task():
     # 1. Pedir al usuario el nombre de la tarea
-    titulo = input("Ingresa la descripción de la nueva tarea: ")
+    titulo = input("Ingresa la descripción de la nueva tarea (o presiona Enter sin escribir nada para cancelar): ")
+    
+    if titulo.strip() == "":
+        print("\n❌ Operación cancelada. Volviendo al menú principal...")
+        return  # Esto finaliza la función inmediatamente
     
     # 2. Leer las tareas existentes (si el archivo ya existe)
     tareas = []
