@@ -1,4 +1,4 @@
-from tasks import create_task, list_tasks
+from tasks import create_task, list_tasks, mark_task_completed
 
 def main():
     while True:
@@ -16,7 +16,7 @@ def main():
         elif opcion == '2':
             list_tasks()
         elif opcion == '3':
-            print(">> Opción seleccionada: Completar tarea (Lógica pendiente)")
+            mark_task_completed()
         elif opcion == '4':
             print(">> Opción seleccionada: Eliminar tarea (Lógica pendiente)")
         elif opcion == '5':

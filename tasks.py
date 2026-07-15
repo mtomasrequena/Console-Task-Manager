@@ -94,3 +94,54 @@ def list_tasks():
     for tarea in tareas:
         estado = "✅ Completada" if tarea["completada"] else "❌ Pendiente"
         print(f"ID: {tarea['id']} | {tarea['titulo']} | Estado: {estado}")
+
+def mark_task_completed():
+    """Marca una tarea como completada según su ID."""
+    
+    # 1. Leemos la lista de tareas desde el archivo.
+    tareas = _leer_tareas()
+    
+    # 2. Verificamos si hay tareas para marcar.
+    if len(tareas) == 0:
+        print("\n📭 No hay tareas guardadas para marcar como completadas.")
+        return
+    
+    # 3. Mostramos las tareas actuales para que el usuario pueda elegir.
+    list_tasks()
+    
+    # 4. Bucle infinito para validar el ingreso del ID
+    while True:
+        entrada = input("\nIngresa el ID de la tarea que deseas marcar como completada (o Enter para cancelar): ")
+        
+        # Vía de escape por si el usuario se arrepiente
+        if entrada.strip() == "":
+            print("\n❌ Operación cancelada. Volviendo al menú principal...")
+            return
+            
+        # Intentamos convertir la entrada a número
+        try:
+            id_tarea = int(entrada)
+        except ValueError:
+            print("❌ Entrada inválida. Por favor, ingresa solo números. Inténtalo de nuevo.")
+            continue  # 'continue' hace que el bucle vuelva a empezar desde arriba
+            
+        # 5. Si es un número válido, buscamos la tarea por su ID
+        tarea_encontrada = False
+        for tarea in tareas:
+            if tarea["id"] == id_tarea:
+                tarea_encontrada = True
+                
+                # Verificamos si ya estaba completada
+                if tarea["completada"]:
+                    print(f"\n⚠️ La tarea '{tarea['titulo']}' ya está marcada como completada.")
+                else:
+                    tarea["completada"] = True
+                    _guardar_tareas(tareas)
+                    print(f"\n✅ Tarea '{tarea['titulo']}' marcada como completada.")
+                
+                return  # 'return' finaliza la función entera exitosamente
+        
+        # 6. Si el bucle 'for' terminó y no se encontró la tarea
+        if not tarea_encontrada:
+            print(f"❌ No se encontró ninguna tarea con el ID {id_tarea}. Inténtalo de nuevo.")
+            # Al no haber 'return' ni 'break' aquí, el 'while True' vuelve a empezar
