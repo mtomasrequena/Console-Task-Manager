@@ -1,4 +1,4 @@
-from tasks import create_task, list_tasks, mark_task_completed
+from tasks import create_task, delete_task, list_tasks, mark_task_completed
 
 def main():
     while True:
@@ -18,7 +18,7 @@ def main():
         elif opcion == '3':
             mark_task_completed()
         elif opcion == '4':
-            print(">> Opción seleccionada: Eliminar tarea (Lógica pendiente)")
+            delete_task()  # Asegúrate de que esta función esté definida en tasks.py
         elif opcion == '5':
             print("Saliendo del Gestor de Tareas. ¡Hasta luego!")
             break

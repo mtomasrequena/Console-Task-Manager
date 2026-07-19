@@ -36,6 +36,26 @@ def _guardar_tareas(tareas):
         # 'indent=4' hace que el archivo JSON sea con saltos de línea y espacios).
         json.dump(tareas, file, indent=4)
 
+def _pedir_id_valido(mensaje):
+    """
+    Muestra un mensaje solicitando un ID. 
+    Maneja el bucle de validación y la vía de escape.
+    Devuelve el número entero (ID) o None si el usuario cancela.
+    """
+    while True:
+        entrada = input(mensaje)
+        
+        # Vía de escape
+        if entrada.strip() == "":
+            print("\n❌ Operación cancelada. Volviendo al menú principal...")
+            return None
+            
+        # Intentamos convertir a número
+        try:
+            return int(entrada)
+        except ValueError:
+            print("❌ Entrada inválida. Por favor, ingresa solo números. Inténtalo de nuevo.")
+
 # --- FUNCIONES PRINCIPALES (FEATURES) ---
 # Estas son las funciones que sí llamaremos desde nuestro menú en main.py
 
@@ -111,20 +131,12 @@ def mark_task_completed():
     
     # 4. Bucle infinito para validar el ingreso del ID
     while True:
-        entrada = input("\nIngresa el ID de la tarea que deseas marcar como completada (o Enter para cancelar): ")
-        
+        id_tarea = _pedir_id_valido("\nIngresa el ID de la tarea que deseas marcar como completada (o Enter para cancelar): ")        
         # Vía de escape por si el usuario se arrepiente
-        if entrada.strip() == "":
-            print("\n❌ Operación cancelada. Volviendo al menú principal...")
+        # Si el helper devolvió None, el usuario quiso salir
+        if id_tarea is None:
             return
-            
-        # Intentamos convertir la entrada a número
-        try:
-            id_tarea = int(entrada)
-        except ValueError:
-            print("❌ Entrada inválida. Por favor, ingresa solo números. Inténtalo de nuevo.")
-            continue  # 'continue' hace que el bucle vuelva a empezar desde arriba
-            
+
         # 5. Si es un número válido, buscamos la tarea por su ID
         tarea_encontrada = False
         for tarea in tareas:
@@ -145,3 +157,46 @@ def mark_task_completed():
         if not tarea_encontrada:
             print(f"❌ No se encontró ninguna tarea con el ID {id_tarea}. Inténtalo de nuevo.")
             # Al no haber 'return' ni 'break' aquí, el 'while True' vuelve a empezar
+
+def delete_task():
+    """Elimina una tarea según su ID."""
+    
+    # 1. Leemos la lista de tareas desde el archivo.
+    tareas = _leer_tareas()
+    
+    # 2. Verificamos si hay tareas para eliminar.
+    if len(tareas) == 0:
+        print("\n📭 No hay tareas guardadas para eliminar.")
+        return
+    
+    # 3. Mostramos las tareas actuales para que el usuario pueda elegir.
+    list_tasks()
+    
+    # 4. Bucle infinito para validar el ingreso del ID
+    while True:
+        id_tarea = _pedir_id_valido("\nIngresa el ID de la tarea que deseas eliminar (o Enter para cancelar): ")
+        
+        if id_tarea is None:
+            return
+            
+        # 5. Si es un número válido, buscamos la tarea por su ID
+        tarea_encontrada = False
+        for i, tarea in enumerate(tareas):
+            if tarea["id"] == id_tarea:
+                tarea_encontrada = True
+                
+                # Confirmación antes de eliminar
+                confirmacion = input(f"⚠️ ¿Estás seguro de que deseas eliminar la tarea '{tarea['titulo']}'? (s/n): ")
+                if confirmacion.lower() == 's':
+                    del tareas[i]
+                    _guardar_tareas(tareas)
+                    print(f"\n✅ Tarea '{tarea['titulo']}' eliminada con éxito.")
+                else:
+                    print("\n❌ Operación cancelada. Volviendo al menú principal...")
+                
+                return  # 'return' finaliza la función entera exitosamente
+        
+        # 6. Si el bucle 'for' terminó y no se encontró la tarea
+        if not tarea_encontrada:
+            print(f"❌ No se encontró ninguna tarea con el ID {id_tarea}. Inténtalo de nuevo.")
+            # Al no haber 'return' ni 'break' aquí, el 'while
